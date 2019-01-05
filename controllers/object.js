@@ -1,7 +1,15 @@
 const _ = require('lodash');
 const Object = require('../models/Object');
 
-exports.get = (req, res) => {
+exports.get = (req, res, next) => {
+  const { key } = req.params;
+  if (!key) {
+    return next({
+      httpStatusCode: 400,
+      message: 'request body\'s key shouldnt be empty'
+    });
+  }
+
   res.send({ value: 'value1' });
 };
 

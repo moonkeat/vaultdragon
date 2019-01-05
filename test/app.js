@@ -60,6 +60,24 @@ describe('POST /object', () => {
 });
 
 describe('GET /object/key', () => {
+  it('should return 400 if key is undefined', (done) => {
+    request(app)
+      .get('/object')
+      .expect(400, done);
+  });
+
+  it('should return 400 if key is empty', (done) => {
+    request(app)
+      .get('/object/')
+      .expect(400, done);
+  });
+
+  it('should return 400 if key is empty', (done) => {
+    request(app)
+      .get('/object/   ')
+      .expect(400, done);
+  });
+
   it('should return 200 OK', (done) => {
     request(app)
       .get('/object/key')
