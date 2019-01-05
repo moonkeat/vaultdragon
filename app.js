@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 const mongoose = require('mongoose');
 
 mongoose.set('useNewUrlParser', true);
@@ -16,14 +15,12 @@ const app = express();
 
 /* istanbul ignore next */
 app.set('port', process.env.PORT || 8080);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const objectController = require('./controllers/object');
 
-app.get('/object/:key', objectController.get);
+app.get('/object/:key?', objectController.get);
 app.post('/object', objectController.post);
 
 app.use((err, req, res, next) => {
