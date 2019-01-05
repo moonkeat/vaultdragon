@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "vaultdragon coding test",
   "scripts": {
-    "start": "node -r dotenv/config app.js",
+    "start": "supervisor -- -r dotenv/config app.js",
     "test": "nyc mocha --timeout=10000 --exit",
     "lint": "eslint \"**/*.js\""
   },
@@ -19,7 +19,8 @@
     "nyc": "^13.1.0",
     "sinon": "^7.2.2",
     "sinon-mongoose": "^2.2.1",
-    "supertest": "^3.3.0"
+    "supertest": "^3.3.0",
+    "supervisor": "^0.12.0"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
