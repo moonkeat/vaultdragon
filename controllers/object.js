@@ -1,16 +1,60 @@
 const _ = require('lodash');
+const moment = require('moment');
 const Object = require('../models/Object');
 
-exports.get = (req, res, next) => {
+exports.get = async (req, res, next) => {
   const { key } = req.params;
   if (!key) {
     return next({
       httpStatusCode: 400,
-      message: 'request body\'s key shouldnt be empty'
+      message: 'key shouldnt be empty'
     });
   }
 
-  res.send({ value: 'value1' });
+  let query = { key };
+
+  const { timestamp } = req.query;
+  if (timestamp && (timestamp.length === 10 || timestamp.length === 13)) {
+    let timestampObject;
+    if (timestamp.length === 10) {
+      timestampObject = moment.unix(timestamp);
+    }
+    if (timestamp.length === 13) {
+      timestampObject = moment(timestamp, 'x');
+    }
+    if (!timestampObject.isValid()) {
+      return next({
+        httpStatusCode: 400,
+        message: 'timestamp should be valid'
+      });
+    }
+
+    query = _.assign(query, {
+      createdAt: {
+        $lte: timestampObject.toDate(),
+      },
+    });
+  }
+
+  let object;
+  try {
+    object = await Object.findOne(query, ['value'], {
+      sort: {
+        createdAt: -1,
+      }
+    });
+  } catch (e) {
+    /* istanbul ignore next */
+    return next(e);
+  }
+  if (!object) {
+    return next({
+      httpStatusCode: 404,
+      message: 'key not found'
+    });
+  }
+
+  res.send({ value: object.value });
 };
 
 exports.post = async (req, res, next) => {
@@ -30,12 +74,29 @@ exports.post = async (req, res, next) => {
       message: 'request body\'s key shouldnt be empty'
     });
   }
+
+  const reqValue = body[reqKey];
+  if (!_.isObject(reqValue) && !_.isString(reqValue)) {
+    return next({
+      httpStatusCode: 400,
+      message: 'request body\'s value invalid, expecting string or json object'
+    });
+  }
+
   const object = Object({
     key: reqKey,
-    value: body[reqKey],
+    value: reqValue,
   });
 
-  const { key, value, createdAt } = await object.save();
+  let savedObject;
+  try {
+    savedObject = await object.save();
+  } catch (e) {
+    /* istanbul ignore next */
+    return next(e);
+  }
+
+  const { key, value, createdAt } = savedObject;
 
   res.send({
     key,
