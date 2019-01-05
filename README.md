@@ -71,6 +71,15 @@ Possible errors
 GET /object/mykey1
 ```
 
+Query params
+
+| Field     | Description                               |
+|-----------|-------------------------------------------|
+| timestamp | (Optional) Unix timestamps (UTC timezone) |
+
+`GET /object` will return the value of the key based on the timestamp provided.
+
+
 Sample response
 ```
 {
