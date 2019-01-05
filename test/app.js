@@ -73,6 +73,7 @@ describe('POST /object', () => {
   });
 
   it('should return 200 if request body\'s value is json object', (done) => {
+    const now = new Date();
     request(app)
       .post('/object')
       .send({ mykey: { hello: 'world' } })
@@ -80,11 +81,13 @@ describe('POST /object', () => {
       .end((err, res) => {
         assert.strictEqual(res.body.key, 'mykey', 'wrong key in response body');
         assert.deepEqual(res.body.value, { hello: 'world' }, 'wrong value in response body');
+        assert.closeTo(res.body.timestamp, now.getTime(), 500, 'wrong timestamp in response body');
         done();
       });
   });
 
   it('should return 200 if request body\'s value is string', (done) => {
+    const now = new Date();
     request(app)
       .post('/object')
       .send({ mykey: 'value1' })
@@ -92,6 +95,7 @@ describe('POST /object', () => {
       .end((err, res) => {
         assert.strictEqual(res.body.key, 'mykey', 'wrong key in response body');
         assert.strictEqual(res.body.value, 'value1', 'wrong value in response body');
+        assert.closeTo(res.body.timestamp, now.getTime(), 500, 'wrong timestamp in response body');
         done();
       });
   });

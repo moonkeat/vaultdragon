@@ -101,6 +101,6 @@ exports.post = async (req, res, next) => {
   res.send({
     key,
     value,
-    createdAt: createdAt.getTime()
+    timestamp: createdAt.getTime()
   });
 };
