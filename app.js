@@ -28,7 +28,7 @@ app.use((err, req, res, next) => {
   /* istanbul ignore next */
   res.status(err.httpStatusCode || 500).send({
     error: {
-      message: err.message || 'Server error'
+      message: err.message || 'internal server error'
     }
   });
 });
