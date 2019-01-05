@@ -26,6 +26,16 @@ const objectController = require('./controllers/object');
 app.get('/object/:key', objectController.get);
 app.post('/object', objectController.post);
 
+app.use((err, req, res, next) => {
+  console.error(err);
+  /* istanbul ignore next */
+  res.status(err.httpStatusCode || 500).send({
+    error: {
+      message: err.message || 'Server error'
+    }
+  });
+});
+
 app.listen(app.get('port'), () => {
   console.log('App is running at http://localhost:%d in %s mode', app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
