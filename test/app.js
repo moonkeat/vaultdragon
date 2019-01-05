@@ -39,6 +39,13 @@ describe('POST /object', () => {
       .expect(400, done);
   });
 
+  it('should return 400 if request body\'s key is empty', (done) => {
+    request(app)
+      .post('/object')
+      .send({ '': 'value1' })
+      .expect(400, done);
+  });
+
   it('should return 200 OK', (done) => {
     request(app)
       .post('/object')
